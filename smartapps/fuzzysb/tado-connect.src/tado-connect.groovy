@@ -2153,3 +2153,10 @@ def userIsHome(){
     def jsonbody = new groovy.json.JsonOutput().toJson([homePresence: "HOME"])
     sendCommand("geofencing",null,[jsonbody])
 }
+
+def resumeSchedule(childDevice){
+    def item = (childDevice.device.deviceNetworkId).tokenize('|')
+    def deviceId = item[0]
+    log.debug "Executing 'sendCommand.resumeSchedule'"
+    sendCommand("deleteEntry",childDevice, [deviceId])
+}
