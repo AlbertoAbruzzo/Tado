@@ -2151,5 +2151,5 @@ def userIsAway(){
 def userIsHome(){
     log.debug "Executing 'sendCommand.userIsHome'"
     def jsonbody = new groovy.json.JsonOutput().toJson([homePresence: "HOME"])
-    sendCommand("geofencing",null,[deviceId,jsonbody])
+    sendCommand("geofencing",null,[jsonbody])
 }
