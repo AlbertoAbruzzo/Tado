@@ -522,6 +522,12 @@ def setThermostatMode(requiredMode){
         case "fan":
         	fan()
         break
+      case "away":
+        	away()
+        break
+      case "home":
+        	home()
+        break
 		case "off":
         	off()
         break
@@ -704,4 +710,12 @@ def cmdFanSpeedLow(){
 
 def endManualControl(){
 	parent.endManualControl(this)
+}
+
+def away(){
+	parent.userIsAway()
+}
+
+def home(){
+	parent.userIsHome()
 }
