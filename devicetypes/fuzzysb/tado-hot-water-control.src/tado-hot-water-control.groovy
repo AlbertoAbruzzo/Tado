@@ -299,6 +299,9 @@ def setThermostatMode(requiredMode){
       	case "home":
         	home()
         break
+		case "resume":
+        	resume()
+        break
 		case "emergency heat":
         	emergencyHeat()
         break
@@ -324,4 +327,8 @@ def away(){
 
 def home(){
 	parent.userIsHome()
+}
+
+def resume() {
+	parent.resumeSchedule(this)
 }
