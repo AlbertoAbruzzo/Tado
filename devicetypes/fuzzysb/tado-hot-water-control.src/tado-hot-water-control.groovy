@@ -293,6 +293,12 @@ def setThermostatMode(requiredMode){
 		case "off":
         	off()
         break
+		case "away":
+        	away()
+        break
+      	case "home":
+        	home()
+        break
 		case "emergency heat":
         	emergencyHeat()
         break
@@ -310,4 +316,12 @@ def emergencyHeat(){
 
 def endManualControl(){
   parent.endManualControl(this)
+}
+
+def away(){
+	parent.userIsAway()
+}
+
+def home(){
+	parent.userIsHome()
 }
