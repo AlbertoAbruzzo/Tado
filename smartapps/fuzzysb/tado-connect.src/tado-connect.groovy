@@ -501,6 +501,13 @@ private sendCommand(method,childDevice,args = []) {
         			path: "/api/v2/homes/" + state.homeId + "/zones/" + args[0] + "/overlay",
         			requestContentType: "application/json",
                     query: [username:settings.username, password:settings.password],
+                   	],
+    'geofencing': [
+        			uri: apiUrl(),
+        			path: "/api/v2/homes/" + state.homeId + "/presenceLock",
+        			requestContentType: "application/json",
+                    query: [username:settings.username, password:settings.password],
+                    body: args[0]
                    	]
 	]
 
@@ -549,7 +556,11 @@ private sendCommand(method,childDevice,args = []) {
             httpDelete(request) { resp ->
                 parsedeleteResponse(resp,childDevice)
             }
-        }else{
+        } else if (method == "geofencing"){
+            httpPut(request) { resp ->
+                parseputResponse(resp,childDevice)
+            }
+        } else{
             httpGet(request)
         }
     } catch(Exception e){
@@ -1322,7 +1333,7 @@ def autoCommand(childDevice){
     try {
       traperror = ((childDevice.device.currentValue("thermostatSetpoint")).intValue())
     }
-    catch (NumberFormatException e){
+    catch (Exception e){
         traperror = 0
     }
     if(traperror == 0){
@@ -1343,7 +1354,7 @@ def autoCommand(childDevice){
     if(capabilitySupportsWaterTempControl == "true"){
       try {
         traperror = ((childDevice.device.currentValue("thermostatSetpoint")).intValue())
-      }catch (NumberFormatException e){
+      }catch (Exception e){
         traperror = 0
       }
       if(traperror == 0){
@@ -1771,7 +1782,7 @@ def coolCommand(childDevice){
     def traperror
     try {
         traperror = ((childDevice.device.currentValue("thermostatSetpoint")).intValue())
-    }catch (NumberFormatException e){
+    }catch (Exception e){
          traperror = 0
     }
     if (fancapabilitysupported == "true"){
@@ -1844,7 +1855,7 @@ def heatCommand(childDevice){
       {
         traperror = ((childDevice.device.currentValue("thermostatSetpoint")).intValue())
       }
-      catch (NumberFormatException e)
+      catch (Exception e)
       {
         traperror = 0
       }
@@ -1910,7 +1921,7 @@ def heatCommand(childDevice){
         {
           traperror = ((childDevice.device.currentValue("thermostatSetpoint")).intValue())
         }
-        catch (NumberFormatException e)
+        catch (Exception e)
         {
           traperror = 0
         }
@@ -1940,7 +1951,7 @@ def heatCommand(childDevice){
       if(capabilitySupportsWaterTempControl == "true"){
         try {
           traperror = ((childDevice.device.currentValue("thermostatSetpoint")).intValue())
-        }catch (NumberFormatException e){
+        }catch (Exception e){
           traperror = 0
         }
         if(traperror == 0){
@@ -1980,7 +1991,7 @@ def emergencyHeat(childDevice){
     {
       traperror = Integer.parseInt(childDevice.device.currentValue("thermostatSetpoint"))
     }
-    catch (NumberFormatException e)
+    catch (Exception e)
     {
       traperror = 0
     }
@@ -2054,7 +2065,7 @@ def emergencyHeat(childDevice){
       {
         traperror = ((childDevice.device.currentValue("thermostatSetpoint")).intValue())
       }
-      catch (NumberFormatException e)
+      catch (Exception e)
       {
         traperror = 0
       }
@@ -2086,7 +2097,7 @@ def emergencyHeat(childDevice){
       {
         traperror = ((childDevice.device.currentValue("thermostatSetpoint")).intValue())
       }
-      catch (NumberFormatException e)
+      catch (Exception e)
       {
         traperror = 0
       }
@@ -2129,4 +2140,16 @@ def userStatusCommand(childDevice){
 		sendCommand("userStatus",childDevice,[])
     	} catch(Exception e) { log.debug("Failed in setting userStatusCommand: " + e)
     }
+}
+
+def userIsAway(){
+    log.debug "Executing 'sendCommand.userIsAway'"
+    def jsonbody = new groovy.json.JsonOutput().toJson([homePresence: "AWAY"])
+    sendCommand("geofencing",null,[jsonbody])
+}
+
+def userIsHome(){
+    log.debug "Executing 'sendCommand.userIsHome'"
+    def jsonbody = new groovy.json.JsonOutput().toJson([homePresence: "HOME"])
+    sendCommand("geofencing",null,[deviceId,jsonbody])
 }
